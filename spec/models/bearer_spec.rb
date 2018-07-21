@@ -18,7 +18,7 @@ RSpec.describe Bearer, type: :model do
   end
 
   context 'with prohibited name' do
-    let(:bearer) { build :bearer, name: 'invalid' }
+    let(:bearer) { build :bearer, name: 'invalid sth' }
     it 'is not valid' do
       expect(bearer).to_not be_valid
     end

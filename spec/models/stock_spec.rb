@@ -19,7 +19,7 @@ RSpec.describe Stock, type: :model do
   end
 
   context 'with prohibited name' do
-    let(:stock) { build :stock, name: 'invalid' }
+    let(:stock) { build :stock, name: 'invalid sth' }
     it 'is not valid' do
       expect(stock).to_not be_valid
     end
