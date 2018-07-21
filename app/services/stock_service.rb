@@ -6,7 +6,7 @@ class StockService
     @errors = []
   end
 
-  def build
+  def create_stock
     ActiveRecord::Base.transaction do
       build_with_errors(initialize_bearer)
       build_with_errors(initialize_market_price)
@@ -16,7 +16,7 @@ class StockService
     false
   end
 
-  def update
+  def update_stock
     ActiveRecord::Base.transaction do
       build_with_errors(initialize_bearer)
       build_with_errors(initialize_market_price)
