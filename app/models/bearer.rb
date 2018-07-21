@@ -1,2 +1,0 @@
-class Bearer < ApplicationRecord
-end

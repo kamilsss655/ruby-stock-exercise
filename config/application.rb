@@ -8,8 +8,9 @@ Bundler.require(*Rails.groups)
 
 module Wallet
   class Application < Rails::Application
-    # Settings in config/environments/* take precedence over those specified here.
-    # Application configuration should go into files in config/initializers
-    # -- all .rb files in that directory are automatically loaded.
+    # Configure application as API
+    config.api_only = true
+    # Keep default debug information format
+    config.debug_exception_response_format = :default
   end
 end
