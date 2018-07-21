@@ -60,7 +60,7 @@ RSpec.describe StocksController, type: :controller do
       end
     end
   end
-#
+
   describe 'PUT #update' do
     let(:stock) { create :stock }
     context 'with valid params' do
@@ -102,7 +102,6 @@ RSpec.describe StocksController, type: :controller do
     context 'with invalid params' do
       let(:stock) { create :stock }
       it 'renders a JSON response with errors for the stock' do
-        puts invalid_attributes
         put :update, params: {stock: invalid_attributes, id: stock.id}, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
@@ -118,12 +117,11 @@ RSpec.describe StocksController, type: :controller do
 
   describe 'DELETE #destroy' do
     it 'soft-deletes the existing stock' do
-      skip "to be implemented"
+      skip 'to be implemented'
       stock = Stock.create! valid_attributes
       expect {
         delete :destroy, params: {id: stock.to_param}, session: valid_session
       }.to change(Stock, :count).by(-1)
     end
   end
-
 end
