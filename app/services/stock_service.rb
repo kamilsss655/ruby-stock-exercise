@@ -48,7 +48,11 @@ class StockService
 
   def build_with_errors(instance)
     return if instance.save
-    @errors << instance.errors
+    @errors << { human_name(instance) => instance.errors }
     raise ActiveRecord::Rollback
+  end
+
+  def human_name(instance)
+    instance.class.table_name.singularize
   end
 end
