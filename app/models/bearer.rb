@@ -11,8 +11,9 @@
 class Bearer < ApplicationRecord
   has_many :stocks,
            inverse_of: :bearer
+
+  validates_with ForbiddenNameValidator
   validates :name,
             presence: true,
             uniqueness: true
-
 end

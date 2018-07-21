@@ -13,6 +13,15 @@
 require 'rails_helper'
 
 RSpec.describe Stock, type: :model do
-  it { should belong_to(:bearer) }
-  it { should belong_to(:market_price) }
+  context 'with valid attributes' do
+    it { should belong_to(:bearer) }
+    it { should belong_to(:market_price) }
+  end
+
+  context 'with prohibited name' do
+    let(:stock) { build :stock, name: 'invalid' }
+    it 'is not valid' do
+      expect(stock).to_not be_valid
+    end
+  end
 end

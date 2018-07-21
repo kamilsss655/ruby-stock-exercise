@@ -11,7 +11,16 @@
 require 'rails_helper'
 
 RSpec.describe Bearer, type: :model do
-  subject(:bearer) { build :bearer }
-  it { should validate_uniqueness_of(:name) }
-  it { should validate_presence_of(:name) }
+  context 'with valid attributes' do
+    subject(:bearer) { build :bearer }
+    it { should validate_uniqueness_of(:name) }
+    it { should validate_presence_of(:name) }
+  end
+
+  context 'with prohibited name' do
+    let(:bearer) { build :bearer, name: 'invalid' }
+    it 'is not valid' do
+      expect(bearer).to_not be_valid
+    end
+  end
 end

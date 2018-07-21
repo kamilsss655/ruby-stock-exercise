@@ -15,4 +15,6 @@ class Stock < ApplicationRecord
              inverse_of: :stocks
   belongs_to :market_price,
              inverse_of: :stocks
+
+  validates_with ForbiddenNameValidator
 end
