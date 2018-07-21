@@ -10,13 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180721132329) do
+ActiveRecord::Schema.define(version: 20180721140248) do
 
   create_table "bearers", force: :cascade do |t|
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_bearers_on_name", unique: true
+  end
+
+  create_table "market_prices", force: :cascade do |t|
+    t.string   "currency",    null: false
+    t.integer  "value_cents", null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.index ["currency", "value_cents"], name: "index_market_prices_on_currency_and_value_cents", unique: true
   end
 
 end
