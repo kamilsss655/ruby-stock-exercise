@@ -1,5 +1,18 @@
+# == Schema Information
+#
+# Table name: market_prices
+#
+#  id          :integer          not null, primary key
+#  currency    :string           not null
+#  value_cents :integer          not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#
+
 class MarketPrice < ApplicationRecord
   monetize :value_cents
+  has_many :stocks,
+           inverse_of: :market_price
   validates :value_cents,
             presence: true,
             numericality:
