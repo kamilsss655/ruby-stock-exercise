@@ -14,4 +14,8 @@ FactoryBot.define do
     currency 'usd'
     value_cents 100
   end
+  factory :market_price_x_1, class: MarketPrice do
+    currency 'eur'
+    value_cents 3040
+  end
 end

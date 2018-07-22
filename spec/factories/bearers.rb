@@ -12,4 +12,7 @@ FactoryBot.define do
   factory :bearer do
     name 'Bearer name'
   end
+  factory :bearer_x_1, class: Bearer do
+    name 'Bearer name X 1'
+  end
 end

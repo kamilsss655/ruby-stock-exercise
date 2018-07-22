@@ -74,7 +74,7 @@ RSpec.describe StocksController, type: :controller do
   end
 
   describe 'PUT #update' do
-    let(:stock) { create :stock }
+    let!(:stock) { create :stock }
     context 'with valid params' do
       let(:new_attributes) {
         {
@@ -118,17 +118,36 @@ RSpec.describe StocksController, type: :controller do
         expect(response.content_type).to eq('application/json')
       end
       it 'does not create bearer or market price' do
-        # We create it locally, otherwise the count assertion is invalid
-        stock = create :stock
         expect {
           put :update, params: { stock: invalid_attributes, id: stock.id }, as: :json
         }.to not_change(Bearer, :count).and not_change(MarketPrice, :count)
       end
     end
 
-    context 'with existing bearer and market price' do
+    context 'with attributes matching to existing bearer and market price' do
+      let!(:stock) { create :stock }
+      let!(:existing_market_price) { create :market_price_x_1 }
+      let!(:existing_bearer) { create :bearer_x_1 }
+      let(:matching_attributes) {
+        {
+          name: 'Omega',
+          bearer: {
+            name: existing_bearer.name
+          },
+          market_price: {
+            currency: existing_market_price.currency,
+            value_cents: existing_market_price.value_cents
+          }
+        }
+      }
       it 'reassigns to existing bearer and market price' do
-        skip 'implementation done, write test here'
+        expect {
+          put :update, params: { stock: matching_attributes, id: stock.id }, as: :json
+        }.to not_change(Bearer, :count).and not_change(MarketPrice, :count)
+        stock.reload
+        expect(stock.name).to eq(matching_attributes[:name])
+        expect(stock.bearer).to eq(existing_bearer)
+        expect(stock.market_price).to eq(existing_market_price)
       end
     end
   end
