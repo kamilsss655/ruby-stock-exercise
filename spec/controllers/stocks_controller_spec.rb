@@ -61,7 +61,7 @@ RSpec.describe StocksController, type: :controller do
     context 'with invalid params' do
       it 'renders a JSON response with errors for the new stock' do
 
-        post :create, params: invalid_attributes, as: :json
+        post :create, params: { stock: invalid_attributes }, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
         expect(json_response['stock']['name'][0]).to include('Name field cannot contain')
