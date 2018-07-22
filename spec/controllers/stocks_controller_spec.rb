@@ -64,6 +64,7 @@ RSpec.describe StocksController, type: :controller do
         post :create, params: invalid_attributes, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
+        expect(json_response['stock']['name'][0]).to include('Name field cannot contain')
       end
       it 'does not create bearer or market price' do
         expect {
@@ -78,7 +79,7 @@ RSpec.describe StocksController, type: :controller do
     context 'with valid params' do
       let(:new_attributes) {
         {
-          name: 'Stowa Zwei',
+          name: 'Panerai',
           bearer: {
             name: 'Bearer name'
           },
@@ -102,7 +103,6 @@ RSpec.describe StocksController, type: :controller do
         put :update, params: {stock: new_attributes, id: stock.id}, as: :json
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
-        json_response = JSON.parse(response.body)
         expect(json_response['name']).to eql(new_attributes[:name])
         skip 'add implementation later'
         expect(json_response['bearer']['name']).to eql(new_attributes[:bearer][:name])
@@ -114,6 +114,7 @@ RSpec.describe StocksController, type: :controller do
     context 'with invalid params' do
       it 'renders a JSON response with errors for the stock' do
         put :update, params: {stock: invalid_attributes, id: stock.id}, as: :json
+        expect(json_response['stock']['name'][0]).to include('Name field cannot contain')
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
       end

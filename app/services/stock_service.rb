@@ -3,14 +3,14 @@ class StockService
   def initialize(params, stock = nil)
     @stock = stock
     @params = params
-    @errors = []
+    @errors = {}
   end
 
   def create_stock
     ActiveRecord::Base.transaction do
-      build_with_errors(initialize_bearer)
-      build_with_errors(initialize_market_price)
-      build_with_errors(initialize_new_stock)
+      build(initialize_bearer)
+      build(initialize_market_price)
+      build(initialize_new_stock)
       return @stock
     end
     false
@@ -18,9 +18,9 @@ class StockService
 
   def update_stock
     ActiveRecord::Base.transaction do
-      build_with_errors(initialize_bearer)
-      build_with_errors(initialize_market_price)
-      build_with_errors(initialize_stock_for_update)
+      build(initialize_bearer)
+      build(initialize_market_price)
+      build(initialize_stock_for_update)
       return @stock
     end
     false
@@ -46,9 +46,9 @@ class StockService
     @market_price = MarketPrice.find_or_initialize_by(@params['market_price'].to_h)
   end
 
-  def build_with_errors(instance)
+  def build(instance)
     return if instance.save
-    @errors << { human_name(instance) => instance.errors }
+    @errors[human_name(instance)] = instance.errors
     raise ActiveRecord::Rollback
   end
 
