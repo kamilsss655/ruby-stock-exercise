@@ -112,11 +112,17 @@ RSpec.describe StocksController, type: :controller do
     end
 
     context 'with invalid params' do
-      let(:stock) { create :stock }
       it 'renders a JSON response with errors for the stock' do
         put :update, params: {stock: invalid_attributes, id: stock.id}, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
+      end
+      it 'does not create bearer or market price' do
+        # We create it locally, otherwise the count assertion is invalid
+        stock = create :stock
+        expect {
+          put :update, params: { stock: invalid_attributes, id: stock.id }, as: :json
+        }.to not_change(Bearer, :count).and not_change(MarketPrice, :count)
       end
     end
 
