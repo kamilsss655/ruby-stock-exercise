@@ -33,18 +33,26 @@ RSpec.describe StocksController, type: :controller do
   }
 
   describe 'GET #index' do
-    let!(:stocks) { create_list :stock, 2 }
-    it 'returns a success response' do
-      get :index, as: :json
-      expect(response).to be_success
-      expect(json_response.length).to eq(2)
-      expect(json_response[0]['name']).to eq(stocks[0].name)
-      expect(json_response[0]['bearer']['name']).to eq(stocks[0].bearer.name)
-      expect(json_response[0]['market_price']['value_cents']).to eq(stocks[0].market_price.value_cents)
-      expect(json_response[0]['market_price']['currency']).to eq(stocks[0].market_price.currency)
+    context 'with valid collection' do
+      let!(:stocks) { create_list :stock, 2 }
+      it 'returns a success response' do
+        get :index, as: :json
+        expect(response).to be_success
+        expect(json_response.length).to eq(2)
+        expect(json_response[0]['name']).to eq(stocks[0].name)
+        expect(json_response[0]['bearer']['name']).to eq(stocks[0].bearer.name)
+        expect(json_response[0]['market_price']['value_cents']).to eq(stocks[0].market_price.value_cents)
+        expect(json_response[0]['market_price']['currency']).to eq(stocks[0].market_price.currency)
+      end
     end
-    it 'hides soft-deleted stocks' do
-      skip 'to be implemented'
+    context 'with soft-deleted stocks' do
+      let!(:stocks) { create_list :stock, 1 }
+      let!(:soft_deleted_stocks) { create_list :stock, 2, :soft_deleted }
+      it 'hides soft-deleted stocks' do
+        get :index, as: :json
+        expect(response).to be_success
+        expect(json_response.length).to eq(1)
+      end
     end
   end
 
@@ -115,6 +123,15 @@ RSpec.describe StocksController, type: :controller do
         expect(json_response['market_price']['currency']).to eql(new_attributes[:market_price][:currency])
         expect(json_response['market_price']['value_cents']).to eql(new_attributes[:market_price][:value_cents])
       end
+
+      context 'with soft-deleted stock' do
+        let!(:stock) { create :stock, :soft_deleted }
+        it 'raises not found error' do
+          expect {
+            put :update, params: {stock: new_attributes, id: stock.id}, as: :json
+          }.to raise_error(ActiveRecord::RecordNotFound)
+        end
+      end
     end
 
     context 'with invalid params' do
@@ -160,12 +177,14 @@ RSpec.describe StocksController, type: :controller do
   end
 
   describe 'DELETE #destroy' do
+    let!(:stock) { create :stock }
     it 'soft-deletes the existing stock' do
-      skip 'to be implemented'
-      stock = Stock.create! valid_attributes
+      expect(stock.deleted_at).to be_nil
       expect {
-        delete :destroy, params: {id: stock.to_param}, session: valid_session
-      }.to change(Stock, :count).by(-1)
+        delete :destroy, params: {id: stock.id}, as: :json
+      }.to change(Stock, :count).by(-1).and not_change(Stock.with_deleted, :count)
+      stock.reload
+      expect(stock.deleted_at).to_not be_nil
     end
   end
 end
