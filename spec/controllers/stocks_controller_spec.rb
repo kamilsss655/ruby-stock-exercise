@@ -21,7 +21,14 @@ RSpec.describe StocksController, type: :controller do
 
   let(:invalid_attributes) {
     {
-      name: 'invalid'
+      name: 'invalid',
+      bearer: {
+        name: 'Bearer name'
+      },
+      market_price: {
+        currency: 'usd',
+        value_cents: 10_000
+      }
     }
   }
 
@@ -57,6 +64,11 @@ RSpec.describe StocksController, type: :controller do
         post :create, params: invalid_attributes, as: :json
         expect(response).to have_http_status(:unprocessable_entity)
         expect(response.content_type).to eq('application/json')
+      end
+      it 'does not create bearer or market price' do
+        expect {
+          post :create, params: { stock: invalid_attributes }, as: :json
+        }.to not_change(Bearer, :count).and not_change(MarketPrice, :count)
       end
     end
   end
