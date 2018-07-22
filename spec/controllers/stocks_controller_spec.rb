@@ -33,11 +33,18 @@ RSpec.describe StocksController, type: :controller do
   }
 
   describe 'GET #index' do
+    let!(:stocks) { create_list :stock, 2 }
     it 'returns a success response' do
-      skip 'to be implemented'
-      stock = Stock.create! valid_attributes
-      get :index, params: {}, session: valid_session
+      get :index, as: :json
       expect(response).to be_success
+      expect(json_response.length).to eq(2)
+      expect(json_response[0]['name']).to eq(stocks[0].name)
+      expect(json_response[0]['bearer']['name']).to eq(stocks[0].bearer.name)
+      expect(json_response[0]['market_price']['value_cents']).to eq(stocks[0].market_price.value_cents)
+      expect(json_response[0]['market_price']['currency']).to eq(stocks[0].market_price.currency)
+    end
+    it 'hides soft-deleted stocks' do
+      skip 'to be implemented'
     end
   end
 
@@ -104,7 +111,6 @@ RSpec.describe StocksController, type: :controller do
         expect(response).to have_http_status(:ok)
         expect(response.content_type).to eq('application/json')
         expect(json_response['name']).to eql(new_attributes[:name])
-        skip 'add implementation later'
         expect(json_response['bearer']['name']).to eql(new_attributes[:bearer][:name])
         expect(json_response['market_price']['currency']).to eql(new_attributes[:market_price][:currency])
         expect(json_response['market_price']['value_cents']).to eql(new_attributes[:market_price][:value_cents])

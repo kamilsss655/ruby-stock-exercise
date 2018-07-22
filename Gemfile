@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '2.5.0'
 
+gem 'active_model_serializers'
 gem 'annotate'
 gem 'money-rails'
 gem 'puma', '~> 3.0'

@@ -9,10 +9,15 @@
 #
 
 FactoryBot.define do
+  # Factories
   factory :bearer do
-    name 'Bearer name'
+    name
   end
   factory :bearer_x_1, class: Bearer do
     name 'Bearer name X 1'
+  end
+  # Sequences
+  sequence :name do |n|
+    "Bearer name #{n}"
   end
 end
