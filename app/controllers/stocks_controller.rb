@@ -1,4 +1,5 @@
 class StocksController < ApplicationController
+  before_action :set_stock, only: %i[update destroy]
   # GET /stocks
   def index
     @stocks = Stock.all.includes(%i[bearer market_price])
@@ -15,7 +16,7 @@ class StocksController < ApplicationController
   end
 
   def update
-    @stock_service = StockService.new(stock_params, Stock.find(params['id']))
+    @stock_service = StockService.new(stock_params, @stock)
     if @stock_service.update_stock
       render json: @stock_service.stock
     else
@@ -23,12 +24,15 @@ class StocksController < ApplicationController
     end
   end
 
-  # DELETE /stocks/1
   def destroy
-    @stock.destroy
+    @stock.soft_delete
   end
 
   private
+
+  def set_stock
+    @stock = Stock.find(params['id'])
+  end
 
   def stock_params
     params

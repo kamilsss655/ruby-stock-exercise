@@ -8,6 +8,7 @@
 #  market_price_id :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
+#  deleted_at      :datetime
 #
 
 FactoryBot.define do
@@ -16,4 +17,8 @@ FactoryBot.define do
     bearer
     market_price
   end
+  trait :soft_deleted do
+    deleted_at { Time.now }
+  end
+
 end
