@@ -1,26 +1,18 @@
 class StockService
   attr_accessor :stock, :market_price, :bearer, :params, :errors
   def initialize(params, stock = nil)
-    @stock = stock
     @params = params
     @errors = {}
+    initialize_bearer
+    initialize_market_price
+    initialize_stock(stock)
   end
 
-  def create_stock
+  def save_stock
     ActiveRecord::Base.transaction do
-      build(initialize_bearer)
-      build(initialize_market_price)
-      build(initialize_new_stock)
-      return @stock
-    end
-    false
-  end
-
-  def update_stock
-    ActiveRecord::Base.transaction do
-      build(initialize_bearer)
-      build(initialize_market_price)
-      build(initialize_stock_for_update)
+      build(@bearer)
+      build(@market_price)
+      build(@stock)
       return @stock
     end
     false
@@ -28,14 +20,21 @@ class StockService
 
   private
 
+  def initialize_stock(stock)
+    if stock
+      initialize_stock_for_update(stock)
+    else
+      initialize_new_stock
+    end
+  end
+
   def initialize_new_stock
     @stock ||= Stock.new(name: @params['name'], market_price: @market_price, bearer: @bearer)
   end
 
-  def initialize_stock_for_update
-    raise 'No stock provided as param!' if @stock.nil?
-    @stock.assign_attributes(name: @params['name'], market_price: @market_price, bearer: @bearer)
-    @stock
+  def initialize_stock_for_update(stock)
+    stock.assign_attributes(name: @params['name'], market_price: @market_price, bearer: @bearer)
+    @stock = stock
   end
 
   def initialize_bearer

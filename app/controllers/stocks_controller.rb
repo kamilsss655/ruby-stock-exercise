@@ -8,7 +8,7 @@ class StocksController < ApplicationController
 
   def create
     @stock_service = StockService.new(stock_params)
-    if @stock_service.create_stock
+    if @stock_service.save_stock
       render json: @stock_service.stock, status: :created, location: @stock_service.stock
     else
       render json: @stock_service.errors, status: :unprocessable_entity
@@ -17,7 +17,7 @@ class StocksController < ApplicationController
 
   def update
     @stock_service = StockService.new(stock_params, @stock)
-    if @stock_service.update_stock
+    if @stock_service.save_stock
       render json: @stock_service.stock
     else
       render json: @stock_service.errors, status: :unprocessable_entity
