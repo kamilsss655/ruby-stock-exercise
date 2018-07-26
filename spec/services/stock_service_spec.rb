@@ -60,7 +60,7 @@ RSpec.describe StockService do
       end
       context 'with existing bearer and stock' do
         let(:stock_service) { StockService.new(matching_attributes) }
-        it 'it create stock with existing market price and bearer' do
+        it 'create stock with existing market price and bearer' do
           expect { stock_service.save_stock }
             .to change(Stock, :count).by(1)
             .and not_change(MarketPrice, :count)
